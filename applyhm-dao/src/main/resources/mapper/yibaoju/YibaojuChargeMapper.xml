@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.applyhm.dc.yibaoju.po.YibaojuCharge">
+
+	<resultMap id="ResultMap" type="com.applyhm.dc.yibaoju.vo.YibaojuChargeVo">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="tel" property="tel" jdbcType="VARCHAR" />
+		<result column="origin" property="origin" jdbcType="VARCHAR" />
+		<result column="idCard" property="idCard" jdbcType="VARCHAR" />
+		<result column="userName" property="userName" jdbcType="VARCHAR" />
+		<result column="sex" property="sex" jdbcType="INTEGER" />
+		<result column="nation" property="nation" jdbcType="INTEGER" />
+		<result column="personClass" property="personClass" jdbcType="INTEGER" />
+		<result column="sickNo" property="sickNo" jdbcType="VARCHAR" />
+		<result column="securityNo" property="securityNo" jdbcType="VARCHAR" />
+		<result column="chargeNo" property="chargeNo" jdbcType="VARCHAR" />
+		<result column="hospital" property="hospital" jdbcType="VARCHAR" />
+		<result column="hospitalNo" property="hospitalNo" jdbcType="VARCHAR" />
+		<result column="inHospitalDay" property="inHospitalDay" jdbcType="TIMESTAMP" />
+		<result column="outHospitalDay" property="outHospitalDay" jdbcType="TIMESTAMP" />
+		<result column="chargeNum" property="chargeNum" jdbcType="DOUBLE" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="input_user_img_1" property="input_user_img_1" jdbcType="VARCHAR" />
+		<result column="input_user_img_2" property="input_user_img_2" jdbcType="VARCHAR" />
+		<result column="input_fapiao_img_1" property="input_fapiao_img_1" jdbcType="VARCHAR" />
+		<result column="input_fapiao_img_2" property="input_fapiao_img_2" jdbcType="VARCHAR" />
+		<result column="input_fapiao_img_3" property="input_fapiao_img_3" jdbcType="VARCHAR" />
+		<result column="input_fapiao_img_4" property="input_fapiao_img_4" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="baogao_url" property="baogao_url" jdbcType="VARCHAR" />
+		<result column="overTime" property="overTime" jdbcType="TIMESTAMP" />
+		<result column="ownerDanwei" property="ownerDanwei" jdbcType="INTEGER" />
+		<result column="print_status" property="print_status" jdbcType="INTEGER" />
+		<result column="pdfPath" property="pdfPath" jdbcType="VARCHAR" />
+		<result column="hospitalName" property="hospitalName" jdbcType="VARCHAR" />
+		<result column="yibaojuName" property="yibaojuName" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="DB_Column_List">
+		charges.id,
+		charges.idCard,
+		charges.tel,
+		charges.origin,
+		charges.userName,
+		charges.sex,
+		charges.nation,
+		charges.personClass,
+		charges.sickNo,
+		charges.securityNo,
+		charges.chargeNo,
+		charges.hospital,
+		charges.hospitalNo,
+		charges.inHospitalDay,
+		charges.outHospitalDay,
+		charges.chargeNum,
+		charges.remark,
+		charges.createTime,
+		charges.input_user_img_1,
+		charges.input_user_img_2,
+		charges.input_fapiao_img_1,
+		charges.input_fapiao_img_2,
+		charges.input_fapiao_img_3,
+		charges.input_fapiao_img_4,
+		charges.status,
+		charges.baogao_url,
+		charges.overTime,
+		charges.ownerDanwei,
+		charges.print_status,
+		charges.pdfPath,
+		hospital.danwei as hospitalName,
+		yibaoju.danwei as yibaojuName
+	</sql>
+
+	<sql id="Where_Condition">
+		<where>
+			<trim prefixOverrides="and">
+				<!-- 匹配角色 -->
+				<if test="hospital_db != null and hospital_db != ''">and charges.hospital = #{hospital_db}</if>
+				<if test="ownerDanwei_db != null and ownerDanwei_db != ''">and charges.ownerDanwei = #{ownerDanwei_db}</if>
+				<!-- 匹配查询 -->
+				<if test="hospital_s != null and hospital_s != ''">and charges.hospital = #{hospital_s}</if>
+				<if test="ownerDanwei_s != null and ownerDanwei_s != ''">and charges.ownerDanwei = #{ownerDanwei_s}</if>
+				<if test="chargeNo_s != null and chargeNo_s != ''">and charges.chargeNo = #{chargeNo_s}</if>
+				<if test="status_s != null and status_s != ''">and charges.status = #{status_s}</if>
+				<if test="origin_s != null and origin_s != ''">and charges.origin = #{origin_s}</if>
+				<if test="origin_s == null and origin_s == ''">and charges.origin = 'website'</if>
+				<!-- 模糊查询 -->
+				<if test="userName_s != null and userName_s != ''">and charges.userName like concat('%',#{userName_s},'%') </if>
+				<if test="beginTime_s != null and beginTime_s != ''"><![CDATA[ and charges.createTime >= concat(#{beginTime_s},' 00:00:00') ]]></if>
+				<if test="endTime_s != null and endTime_s != ''"><![CDATA[ and charges.createTime <= concat(#{endTime_s},' 23:59:59') ]]></if>
+			</trim>
+		</where>
+	</sql>
+
+	<!-- 查询总数 -->
+	<select id="selectCount" resultType="java.lang.Long" parameterType="java.util.Map">
+		select count(charges.id) from yiliao_charges charges
+		inner join yiliao_danwei hospital on hospital.id = charges.hospital 
+		inner join yiliao_danwei yibaoju on yibaoju.id = charges.ownerDanwei 
+		<include refid="Where_Condition" />
+	</select>
+
+	<!-- 查询 -->
+	<select id="select" resultMap="ResultMap" parameterType="java.util.Map">
+		select
+		<include refid="DB_Column_List" />
+		from yiliao_charges charges 
+		inner join yiliao_danwei hospital on hospital.id = charges.hospital 
+		inner join yiliao_danwei yibaoju on yibaoju.id = charges.ownerDanwei 
+		<include refid="Where_Condition" />
+		<if test="sort == null">order by charges.createTime desc </if>
+        <if test="sort != null">order by ${sort} ${order}</if>
+		<if test="isPage == true">
+			<if test="offset != null and limit != null">
+            	limit #{offset}, #{limit}
+        	</if>
+		</if>
+	</select>
+	
+	<!-- 根据ID查询 -->
+	<select id="selectById" resultMap="ResultMap" parameterType="java.lang.String">
+		select
+		<include refid="DB_Column_List" />
+		from yiliao_charges charges 
+		inner join yiliao_danwei hospital on hospital.id = charges.hospital 
+		inner join yiliao_danwei yibaoju on yibaoju.id = charges.ownerDanwei 
+		where charges.id = #{id} 
+	</select>
+	
+	<!-- 添加 -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.applyhm.dc.yibaoju.vo.YibaojuChargeVo">
+		insert into 
+			yiliao_charges
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+		  <if test="idCard != null" > idCard, </if>
+		  <if test="tel != null" > tel, </if>
+		  <if test="origin != null" > origin, </if>
+		  <if test="userName != null" > userName, </if>
+		  <if test="sex != null" > sex, </if>
+		  <if test="nation != null" > nation, </if>
+		  <if test="personClass != null" > personClass, </if>
+		  <if test="sickNo != null" > sickNo, </if>
+		  <if test="securityNo != null" > securityNo, </if>
+		  <if test="chargeNo != null" > chargeNo, </if>
+		  <if test="hospital != null" > hospital, </if>
+		  <if test="hospitalNo != null" > hospitalNo, </if>
+		  <if test="inHospitalDay != null" > inHospitalDay, </if>
+		  <if test="outHospitalDay != null" > outHospitalDay, </if>
+		  <if test="chargeNum != null" > chargeNum, </if>
+		  <if test="remark != null" > remark, </if>
+		  <if test="createTime != null" > createTime, </if>
+		  <if test="input_user_img_1 != null" > input_user_img_1, </if>
+		  <if test="input_user_img_2 != null" > input_user_img_2, </if>
+		  <if test="input_fapiao_img_1 != null" > input_fapiao_img_1, </if>
+		  <if test="input_fapiao_img_2 != null" > input_fapiao_img_2, </if>
+		  <if test="input_fapiao_img_3 != null" > input_fapiao_img_3, </if>
+		  <if test="input_fapiao_img_4 != null" > input_fapiao_img_4, </if>
+		  <if test="status != null" > status, </if>
+		  <if test="baogao_url != null" > baogao_url, </if>
+		  <if test="overTime != null" > overTime, </if>
+		  <if test="ownerDanwei != null" > ownerDanwei, </if>
+		  <if test="print_status != null" > print_status, </if>
+		  <if test="pdfPath != null" > pdfPath, </if>
+		</trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+		  <if test="id != null" > #{id}, </if>
+		  <if test="idCard != null" > #{idCard}, </if>
+		  <if test="tel != null" > #{tel}, </if>
+		  <if test="origin != null" > #{origin}, </if>
+		  <if test="userName != null" > #{userName}, </if>
+		  <if test="sex != null" > #{sex}, </if>
+		  <if test="nation != null" > #{nation}, </if>
+		  <if test="personClass != null" > #{personClass}, </if>
+		  <if test="sickNo != null" > #{sickNo}, </if>
+		  <if test="securityNo != null" > #{securityNo}, </if>
+		  <if test="chargeNo != null" > #{chargeNo}, </if>
+		  <if test="hospital != null" > #{hospital}, </if>
+		  <if test="hospitalNo != null" > #{hospitalNo}, </if>
+		  <if test="inHospitalDay != null" > #{inHospitalDay}, </if>
+		  <if test="outHospitalDay != null" > #{outHospitalDay}, </if>
+		  <if test="chargeNum != null" > #{chargeNum}, </if>
+		  <if test="remark != null" > #{remark}, </if>
+		  <if test="createTime != null" > #{createTime}, </if>
+		  <if test="input_user_img_1 != null" > #{input_user_img_1}, </if>
+		  <if test="input_user_img_2 != null" > #{input_user_img_2}, </if>
+		  <if test="input_fapiao_img_1 != null" > #{input_fapiao_img_1}, </if>
+		  <if test="input_fapiao_img_2 != null" > #{input_fapiao_img_2}, </if>
+		  <if test="input_fapiao_img_3 != null" > #{input_fapiao_img_3}, </if>
+		  <if test="input_fapiao_img_4 != null" > #{input_fapiao_img_4}, </if>
+		  <if test="status != null" > #{status}, </if>
+		  <if test="baogao_url != null" > #{baogao_url}, </if>
+		  <if test="overTime != null" > #{overTime}, </if>
+		  <if test="ownerDanwei != null" > #{ownerDanwei}, </if>
+		  <if test="print_status != null" > #{print_status}, </if>
+		  <if test="pdfPath != null" > #{pdfPath}, </if>
+        </trim>
+	</insert>
+	
+	<!-- 更新 -->
+	<update id="updateById" parameterType="com.applyhm.dc.yibaoju.vo.YibaojuChargeVo">
+		update 
+			yiliao_charges 
+		<set>
+			<if test="idCard != null"> idCard = #{idCard}, </if>
+			<if test="tel != null"> tel = #{tel}, </if>
+			<if test="userName != null"> userName = #{userName}, </if>
+			<if test="sex != null"> sex = #{sex}, </if>
+			<if test="nation != null"> nation = #{nation}, </if>
+			<if test="personClass != null"> personClass = #{personClass}, </if>
+			<if test="sickNo != null"> sickNo = #{sickNo}, </if>
+			<if test="securityNo != null"> securityNo = #{securityNo}, </if>
+			<if test="chargeNo != null"> chargeNo = #{chargeNo}, </if>
+			<if test="hospital != null"> hospital = #{hospital}, </if>
+			<if test="hospitalNo != null"> hospitalNo = #{hospitalNo}, </if>
+			<if test="inHospitalDay != null"> inHospitalDay = #{inHospitalDay}, </if>
+			<if test="outHospitalDay != null"> outHospitalDay = #{outHospitalDay}, </if>
+			<if test="chargeNum != null"> chargeNum = #{chargeNum}, </if>
+			<if test="remark != null"> remark = #{remark}, </if>
+			<if test="createTime != null"> createTime = #{createTime}, </if>
+			<if test="input_user_img_1 != null"> input_user_img_1 = #{input_user_img_1}, </if>
+			<if test="input_user_img_2 != null"> input_user_img_2 = #{input_user_img_2}, </if>
+			<if test="input_fapiao_img_1 != null"> input_fapiao_img_1 = #{input_fapiao_img_1}, </if>
+			<if test="input_fapiao_img_2 != null"> input_fapiao_img_2 = #{input_fapiao_img_2}, </if>
+			<if test="input_fapiao_img_3 != null"> input_fapiao_img_3 = #{input_fapiao_img_3}, </if>
+			<if test="input_fapiao_img_4 != null"> input_fapiao_img_4 = #{input_fapiao_img_4}, </if>
+			<if test="status != null"> status = #{status}, </if>
+			<if test="baogao_url != null"> baogao_url = #{baogao_url}, </if>
+			<if test="overTime != null"> overTime = #{overTime}, </if>
+			<if test="ownerDanwei != null"> ownerDanwei = #{ownerDanwei}, </if>
+			<if test="print_status != null"> print_status = #{print_status}, </if>
+			<if test="pdfPath != null"> pdfPath = #{pdfPath}, </if>
+		</set>
+		where id = #{id} 
+	</update>
+	
+	<!-- 根据ID删除 -->
+	<delete id="deleteById" parameterType="java.lang.String">
+		delete from yiliao_charges
+		where id = #{id}
+	</delete>
+	
+</mapper>

@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="applyhm-manage:war">
+    <output-path>$PROJECT_DIR$/applyhm-manage/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>applyhm-manage</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="manage.war">
+      <element id="artifact" artifact-name="applyhm-manage:war exploded" />
+    </root>
+  </artifact>
+</component>

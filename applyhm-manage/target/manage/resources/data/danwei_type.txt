@@ -1,0 +1,4 @@
+[
+    { "id": "yibaoju", "text": "医保局" },
+    { "id": "hospital", "text": "医院" }
+]

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.applyhm.dc.danwei.po.Danwei">
+
+	<resultMap id="ResultMap" type="com.applyhm.dc.danwei.vo.DanweiVo">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="danwei" property="danwei" jdbcType="VARCHAR" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="DB_Column_List">
+		yiliao_danwei.id,
+		yiliao_danwei.type,
+		yiliao_danwei.danwei,
+		yiliao_danwei.remark
+	</sql>
+
+	<sql id="Where_Condition">
+		<where>
+			<trim prefixOverrides="and">
+				<!-- 匹配查询 -->
+				<if test="id != null">and yiliao_danwei.id = #{id}</if>
+				<if test="type != null and type != 'all'">and yiliao_danwei.type = #{type}</if>
+				<if test="type != null and type == 'all'">and 1=1 </if>
+				<!-- 模糊查询 -->
+				<if test="q != null">and yiliao_danwei.danwei like concat('%',#{q},'%') </if>
+				<if test="name != null">and yiliao_danwei.danwei = #{name}</if>
+			</trim>
+		</where>
+	</sql>
+
+
+	<!-- 查询总数 -->
+	<select id="selectCount" resultType="java.lang.Long"
+		parameterType="java.util.Map">
+		select count(id) from yiliao_danwei 
+		<include refid="Where_Condition" />
+	</select>
+
+
+	<!-- 查询 -->
+	<select id="select" resultMap="ResultMap" parameterType="java.util.Map">
+		select
+		<include refid="DB_Column_List" />
+		from yiliao_danwei 
+		<include refid="Where_Condition" />
+		<if test="sort == null">order by yiliao_danwei.type,yiliao_danwei.id </if>
+        <if test="sort != null">order by ${sort} ${order}</if>
+		<if test="isPage == true">
+			<if test="offset != null and limit != null">
+            	limit #{offset}, #{limit}
+        	</if>
+		</if>
+	</select>
+	
+    <!-- 根据ID查询 -->
+	<select id="selectById" resultMap="ResultMap" parameterType="java.lang.Integer">
+		select
+		<include refid="DB_Column_List" />
+		from yiliao_danwei 
+		where id = #{id}
+	</select>
+	
+	<!-- 添加 -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.applyhm.dc.danwei.po.Danwei">
+		insert into yiliao_danwei 
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+		  <if test="type != null" > type, </if>
+		  <if test="danwei != null" > danwei, </if>
+		  <if test="remark != null" > remark, </if>
+		</trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+		  <if test="type != null" > #{type}, </if>
+		  <if test="danwei != null" > #{danwei}, </if>
+		  <if test="remark != null" > #{remark}, </if>
+        </trim>
+	</insert>
+
+	<!-- 更新 -->
+	<update id="updateById" parameterType="com.applyhm.dc.danwei.po.Danwei">
+		update 
+			yiliao_danwei 
+		<set>
+			<if test="danwei != null"> danwei = #{danwei}, </if>
+			<if test="remark != null"> remark = #{remark}, </if>
+		</set>
+		 where id = #{id} 
+	</update>
+
+	<!-- 根据ID删除 -->
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		delete from yiliao_danwei 
+		where id = #{id}
+	</delete>
+	
+	<!-- 删除 -->
+	<delete id="delete" parameterType="java.util.Map">
+		delete from yiliao_danwei 
+		<include refid="Where_Condition" /> 
+	</delete>
+
+</mapper>

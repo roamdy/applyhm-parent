@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/applyhm-core/applyhm-core.iml" filepath="$PROJECT_DIR$/applyhm-core/applyhm-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/applyhm-dao/applyhm-dao.iml" filepath="$PROJECT_DIR$/applyhm-dao/applyhm-dao.iml" />
+      <module fileurl="file://$PROJECT_DIR$/applyhm-fangzhi/applyhm-fangzhi.iml" filepath="$PROJECT_DIR$/applyhm-fangzhi/applyhm-fangzhi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/applyhm-libs/applyhm-libs.iml" filepath="$PROJECT_DIR$/applyhm-libs/applyhm-libs.iml" />
+      <module fileurl="file://$PROJECT_DIR$/applyhm-manage/applyhm-manage.iml" filepath="$PROJECT_DIR$/applyhm-manage/applyhm-manage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/applyhm-parent.iml" filepath="$PROJECT_DIR$/applyhm-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/applyhm-utils/applyhm-utils.iml" filepath="$PROJECT_DIR$/applyhm-utils/applyhm-utils.iml" />
+    </modules>
+  </component>
+</project>

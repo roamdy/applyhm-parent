@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="applyhm-fangzhi:war">
+    <output-path>$PROJECT_DIR$/applyhm-fangzhi/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>applyhm-fangzhi</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="fangzhi.war">
+      <element id="artifact" artifact-name="applyhm-fangzhi:war exploded" />
+    </root>
+  </artifact>
+</component>
